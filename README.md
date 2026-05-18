@@ -116,12 +116,6 @@ QuickShare Pro is built using the latest industry standards for Android developm
 3. Sync Gradle and build the project.
 4. Run the app on **two** physical devices to test the file-sharing functionality.
 
----
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome! 
-If you find a bug or have an idea for an enhancement (like byte-level transfer resuming), feel free to open an issue or submit a Pull Request.
 
 ---
 
