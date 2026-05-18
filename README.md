@@ -1,5 +1,4 @@
 <div align="center">
-  <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="QuickShare Pro Logo" width="120" />
   <h1>QuickShare Pro 🚀</h1>
   <p><strong>A lightning-fast, secure, offline peer-to-peer file sharing application for Android.</strong></p>
 </div>
@@ -44,16 +43,6 @@ QuickShare Pro is built using the latest industry standards for Android developm
 
 ---
 
-## 📸 Screenshots
-
-*(You can add your screenshots here!)*
-
-| Radar Discovery | File Picker | Transfer Progress | Transfer History |
-| :---: | :---: | :---: | :---: |
-| <img src="screenshots/discovery.png" width="200"/> | <img src="screenshots/picker.png" width="200"/> | <img src="screenshots/progress.png" width="200"/> | <img src="screenshots/history.png" width="200"/> |
-
----
-
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -85,4 +74,7 @@ If you find a bug or have an idea for an enhancement (like byte-level transfer r
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
-*Built with ❤️ for the Android Community.*
+
+## 📸 Screenshots
+
+*(You can add your application screenshots below)*
