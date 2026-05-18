@@ -76,5 +76,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 ## 📸 Screenshots
+<img width="1080" height="2097" alt="img8" src="https://github.com/user-attachments/assets/14ea4194-5452-4321-8a45-577ccc240b60" />
+<img width="856" height="1600" alt="img7" src="https://github.com/user-attachments/assets/50701194-3c10-4a05-b714-8927f3bfd80a" />
+<img width="824" height="1600" alt="img6" src="https://github.com/user-attachments/assets/76ee9d70-02cb-4397-899d-d0b52b09e063" />
+<img width="872" height="1600" alt="img5" src="https://github.com/user-attachments/assets/5de624a1-648b-4646-b631-34b5644e6872" />
+<img width="824" height="1600" alt="img4" src="https://github.com/user-attachments/assets/c9090d35-3e3a-4f5c-b446-21deeff2c0ef" />
+<img width="1080" height="2097" alt="img3" src="https://github.com/user-attachments/assets/27d99990-a347-4461-a4b7-cabe808d07ac" />
+<img width="1080" height="2097" alt="img2" src="https://github.com/user-attachments/assets/263e3788-6894-4b95-a420-f62765f1a64c" />
+<img width="862" height="1599" alt="img1" src="https://github.com/user-attachments/assets/7d55a73e-19de-4cf3-a0a2-b1b05ba130ad" />
 
-*(You can add your application screenshots below)*
