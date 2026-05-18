@@ -46,7 +46,7 @@ QuickShare Pro is built using the latest industry standards for Android developm
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Android Studio Iguana (or newer)
+- Android Studio
 - Minimum SDK: API 26 (Android 8.0)
 - Target SDK: API 34 (Android 14)
 - Two physical Android devices (Wi-Fi Direct cannot be reliably tested on standard Android Emulators).
