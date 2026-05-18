@@ -9,6 +9,7 @@ import android.net.wifi.p2p.WifiP2pDevice
 import android.net.wifi.p2p.WifiP2pManager
 import android.os.Build
 import android.provider.Settings
+import com.example.quicksharepro.data.local.SettingsPreferences
 import com.example.quicksharepro.domain.model.DeviceInfo
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -20,7 +21,8 @@ import javax.inject.Singleton
 
 @Singleton
 class WifiDirectManager @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val settings: SettingsPreferences
 ) {
     private val manager: WifiP2pManager? = context.getSystemService(Context.WIFI_P2P_SERVICE) as? WifiP2pManager
     private val channel: WifiP2pManager.Channel? = manager?.initialize(context, context.mainLooper, null)
@@ -182,7 +184,7 @@ class WifiDirectManager @Inject constructor(
     }
 
     fun getLocalDeviceName(): String {
-        return _thisDevice.value?.deviceName ?: Build.MODEL
+        return settings.deviceName
     }
 
     fun disconnect() {

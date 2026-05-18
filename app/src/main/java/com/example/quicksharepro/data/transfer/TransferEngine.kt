@@ -3,6 +3,7 @@ package com.example.quicksharepro.data.transfer
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+import com.example.quicksharepro.data.local.SettingsPreferences
 import com.example.quicksharepro.domain.model.TransferProgress
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +20,8 @@ import javax.inject.Singleton
 
 @Singleton
 class TransferEngine @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val settings: SettingsPreferences
 ) {
     private val _progress = MutableStateFlow<TransferProgress?>(null)
     val progress = _progress.asStateFlow()
@@ -69,23 +71,35 @@ class TransferEngine @Inject constructor(
         val inputStream = socket.getInputStream()
         
         val resolver = context.contentResolver
+        val mimeType = android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(File(fileName).extension) ?: "application/octet-stream"
+        val isImage = mimeType.startsWith("image/")
+        val isVideo = mimeType.startsWith("video/")
+        val galleryEnabled = settings.saveToGallery
+
         val contentValues = android.content.ContentValues().apply {
             put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME, fileName)
             put(android.provider.MediaStore.MediaColumns.SIZE, fileSize)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH, android.os.Environment.DIRECTORY_DOWNLOADS + "/QuickSharePro")
+                val relativePath = when {
+                    galleryEnabled && isImage -> android.os.Environment.DIRECTORY_PICTURES + "/QuickSharePro"
+                    galleryEnabled && isVideo -> android.os.Environment.DIRECTORY_MOVIES + "/QuickSharePro"
+                    else -> android.os.Environment.DIRECTORY_DOWNLOADS + "/QuickSharePro"
+                }
+                put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH, relativePath)
                 put(android.provider.MediaStore.MediaColumns.IS_PENDING, 1)
             }
         }
         
         val collection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            android.provider.MediaStore.Downloads.EXTERNAL_CONTENT_URI
+            when {
+                galleryEnabled && isImage -> android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                galleryEnabled && isVideo -> android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                else -> android.provider.MediaStore.Downloads.EXTERNAL_CONTENT_URI
+            }
         } else {
-            // Fallback for older devices handling images/files.
-            val mimeType = android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(File(fileName).extension)
-            if (mimeType?.startsWith("image/") == true) {
+            if (isImage) {
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            } else if (mimeType?.startsWith("video/") == true) {
+            } else if (isVideo) {
                 android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI
             } else {
                 android.provider.MediaStore.Files.getContentUri("external")

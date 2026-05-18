@@ -8,6 +8,7 @@ import com.example.quicksharepro.data.wifi.WifiDirectManager
 import com.example.quicksharepro.domain.model.*
 import com.example.quicksharepro.domain.repository.FileSelectionRepository
 import com.example.quicksharepro.domain.repository.FileTransferRepository
+import com.example.quicksharepro.domain.repository.TransferHistoryRepository
 import com.example.quicksharepro.service.FileTransferService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +28,8 @@ class FileTransferRepositoryImpl @Inject constructor(
     private val socketClient: SocketClient,
     private val transferEngine: TransferEngine,
     private val wifiDirectManager: WifiDirectManager,
-    private val selectionRepository: FileSelectionRepository
+    private val selectionRepository: FileSelectionRepository,
+    private val historyRepository: TransferHistoryRepository
 ) : FileTransferRepository {
 
     private var pendingAuthorization: kotlinx.coroutines.CompletableDeferred<Boolean>? = null
@@ -188,6 +190,7 @@ class FileTransferRepositoryImpl @Inject constructor(
                     writeMsg(TransferMessage.TransferComplete(sessionId))
                 }
                 _currentTransfer.value = _currentTransfer.value?.copy(status = TransferStatus.COMPLETED)
+                _currentTransfer.value?.let { historyRepository.saveTransfer(it) }
                 selectionRepository.clearSelection()
                 pendingFiles = null
             } catch (e: Exception) {
@@ -195,10 +198,12 @@ class FileTransferRepositoryImpl @Inject constructor(
                 e.printStackTrace()
                 val current = _currentTransfer.value
                 if (current != null) {
-                    _currentTransfer.value = current.copy(
+                    val failed = current.copy(
                         status = TransferStatus.FAILED,
                         errorMessage = "Connection lost. Please ensure the receiver is nearby and try again."
                     )
+                    _currentTransfer.value = failed
+                    historyRepository.saveTransfer(failed)
                 }
             }
         }
@@ -314,6 +319,7 @@ class FileTransferRepositoryImpl @Inject constructor(
                             }
                             is TransferMessage.TransferComplete -> {
                                 _currentTransfer.value = _currentTransfer.value?.copy(status = TransferStatus.COMPLETED)
+                                _currentTransfer.value?.let { historyRepository.saveTransfer(it) }
                                 break
                             }
                             else -> {}
@@ -325,10 +331,12 @@ class FileTransferRepositoryImpl @Inject constructor(
                 e.printStackTrace()
                 val current = _currentTransfer.value
                 if (current != null) {
-                    _currentTransfer.value = current.copy(
+                    val failed = current.copy(
                         status = TransferStatus.FAILED,
                         errorMessage = "Connection lost. Please ensure the sender is nearby and try again."
                     )
+                    _currentTransfer.value = failed
+                    historyRepository.saveTransfer(failed)
                 }
             }
         }

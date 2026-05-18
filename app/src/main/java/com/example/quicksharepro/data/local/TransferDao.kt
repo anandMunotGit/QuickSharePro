@@ -5,6 +5,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TransferDao {
+    @Transaction
+    @Query("SELECT * FROM transfers ORDER BY startTime DESC")
+    fun getAllTransfersWithFiles(): Flow<List<TransferWithFiles>>
+
     @Query("SELECT * FROM transfers ORDER BY startTime DESC")
     fun getAllTransfers(): Flow<List<TransferEntity>>
 

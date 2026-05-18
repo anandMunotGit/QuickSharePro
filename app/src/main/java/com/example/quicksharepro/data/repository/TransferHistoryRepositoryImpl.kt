@@ -18,15 +18,18 @@ class TransferHistoryRepositoryImpl @Inject constructor(
 ) : TransferHistoryRepository {
 
     override fun getHistory(): Flow<List<TransferSession>> {
-        return dao.getAllTransfers().map { entities ->
-            entities.map { entity ->
+        return dao.getAllTransfersWithFiles().map { list ->
+            list.map { twf ->
                 TransferSession(
-                    sessionId = entity.sessionId,
-                    peerDevice = DeviceInfo(entity.deviceName, entity.deviceAddress),
-                    files = emptyList(), // Simplified: files would need a separate join query
-                    status = entity.status,
-                    startTime = entity.startTime,
-                    _totalSize = entity.totalSize
+                    sessionId = twf.transfer.sessionId,
+                    peerDevice = DeviceInfo(twf.transfer.deviceName, twf.transfer.deviceAddress),
+                    files = twf.files.map { f ->
+                        TransferFile(f.fileName, f.fileSize, f.mimeType, null, f.localPath)
+                    },
+                    status = twf.transfer.status,
+                    startTime = twf.transfer.startTime,
+                    _totalSize = twf.transfer.totalSize,
+                    isReceiver = twf.transfer.isIncoming
                 )
             }
         }
@@ -40,7 +43,7 @@ class TransferHistoryRepositoryImpl @Inject constructor(
             status = session.status,
             startTime = session.startTime,
             totalSize = session.totalSize,
-            isIncoming = false // Default
+            isIncoming = session.isReceiver
         )
         dao.insertTransfer(entity)
         
